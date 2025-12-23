@@ -51,6 +51,8 @@ lazy_static! {
         "https://labex.io/skilltrees/rust",
         "https://github.com/TraceMachina/nativelink", // probably broken because @palfrey now works for them...
         "https://www.vulkan.org/",
+        "https://gitlab.redox-os.org/redox-os/redox", // Cloudflare
+        "https://www.modbus.org/",
     ].iter().map(|s| s.to_string()).collect();
     // Overrides for popularity count, each needs a good reason (i.e. downloads/stars we don't support automatic counting of)
     // Each is a URL that's "enough" for an item to pass the popularity checks
@@ -267,7 +269,8 @@ async fn get_downloads(github_url: &str) -> Option<u64> {
 
 fn get_url_core(url: String) -> BoxFuture<'static, (String, Result<(), CheckerError>)> {
     async move {
-        if ASSUME_WORKS.contains(&url) {
+        if ASSUME_WORKS.contains(&url) || url.starts_with("https://medium.com") // cloudflare
+        {
             info!("We assume {} just works...", url);
             return (url, Ok(()));
         }
